@@ -16,11 +16,13 @@ import { MonoText } from "../components/StyledText";
 
 import db from "./db.js"
 
+import firebase from "firebase/app"
+import "firebase/auth"
 
 
 export default function HomeScreen() {
   const [messages, setMessages] = useState([]);
-  const [from, setfrom] = React.useState("");
+  // const [from, setfrom] = React.useState("");
   const [to, setTo] = React.useState("");
   const [text, setText] = React.useState("");
   const [id,setId]=React.useState("");
@@ -38,17 +40,21 @@ export default function HomeScreen() {
     
     
   }, []);
+//   useEffect(()=>{
+// console.log('auth',firebase.auth())
+//   },[])
   const handleDelete =(message)=>{
 db.collection("messages").doc(message.id).delete()
   }
   const handleSend =() =>{
+    const from =firebase.auth().currentUser.uid
     if(id){
       db.collection("message").doc(id).update({from,to,text})
     } else{
     db.collection("messages").add({from,to,text}
     );
   }
-  setfrom("")
+  // setfrom("")
   setTo("")
   setText("")
   setId("")
@@ -65,7 +71,7 @@ setId(message.id)
       <ScrollView
         style={styles.container}
         contentContainerStyle={styles.contentContainer}
-        keyboardShouldPersistTaps='always'
+        keyboardShouldPersistTaps='always' 
       >
         {messages.map((message, i) => (
           <View style={styles.getStartedText}key ={i}>
@@ -79,16 +85,16 @@ setId(message.id)
           </View>
         ))}
       </ScrollView>
-      <TextInput
+      {/* <TextInput
       style={{ height: 40, borderColor: 'gray', borderWidth: 1 }}
       onChangeText={setfrom}
       placeholder="Text"
       value={from}
-    />
+    /> */}
     <TextInput
       style={{ height: 40, borderColor: 'gray', borderWidth: 1 }}
       onChangeText={setTo}
-      placeholder="Text"
+      placeholder="To"
       value={to}
     />
     <TextInput
